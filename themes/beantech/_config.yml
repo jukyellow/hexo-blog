@@ -1,0 +1,14 @@
+
+# Code Highlight theme
+# Available value:
+#    normal | night | night yilia | night eighties | night blue | night bright
+# https://github.com/chriskempson/tomorrow-theme
+# night yilia - https://github.com/litten/hexo-theme-yilia
+highlight_theme: night
+
+# Sidebar widgets setting (hexo 3.9->5.3.0 upgrade error?)
+widgets:
+- short-about
+- recent-posts
+- archive
+- category
