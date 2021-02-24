@@ -6,8 +6,8 @@
 title: 뜻이 있는 곳에 !!!!! 길이 있다
 subtitle: <나를 위한 기록 노트>
 author: 옐란
-language:
-timezone:
+language: ko
+timezone: Asia/Seoul
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
@@ -21,9 +21,9 @@ permalink_defaults:
 # Site settings
 SEOTitle: 옐란
 email: jukyellow@gmail.com
-description: ""
-keyword: ""
-header-img: img/header_img/home-bg-beautiful-shot-cars-road-blue-sky.png
+description: "yelan`s tech blog"
+keyword: "AI, Data Science, MSA"
+header-img: img/header_img/home-bg-beautiful-shot-cars-road-blue-sky.jpg
 signature: true #show signature
 signature-img: img/signature/
 
@@ -43,7 +43,8 @@ anchorjs: true                          # if you want to customize anchor. check
 
 
 # Disqus settings
-disqus_username: unkukjeong
+disqus_username: yelran-s-tech-blog #jukyellow.github.io
+
 
 # Duoshuo settings
 # duoshuo_username: kaijun
@@ -55,8 +56,8 @@ duoshuo_share: true                     # set to false if you want to use Commen
 # Baidu Analytics
 # ba_track_id: 4cc1f2d8f3067386cc5cdb626a202900
 # Google Analytics
-ga_track_id: 'UA-XXXXXXXX-X'          # Format: UA-xxxxxx-xx
-ga_domain: yoursite
+ga_track_id: G-EG1ZFE1SGM        # Format: UA-xxxxxx-xx
+ga_domain: https://jukyellow.github.io/
 
 
 # (21.02.01)hexo-3.9 -> 5.3.0 init + theme add -> set themes\beantech\_config.yml
@@ -64,19 +65,24 @@ ga_domain: yoursite
 sidebar: true   # whether or not using Sidebar.
 sidebar-about-description: "Where there's a will, there's a way!"
 sidebar-avatar: img/aboutMe.JPG      # use absolute URL, seeing it's used in both `/` and `/about/`
-# widgets:
-# - short-about
-# - recent-posts
-# - archive
-# - category
+#widgets:
+#- short-about
+#- recent-posts
+#- archive
+#- category
 # #- friends-blog
 # #- featured-tags
+
 
 # widget behavior
 ## Archive
 archive_type: 'monthly'
 show_count: true
 
+## Categories(juk add)
+category_show_count: true
+# 0 displays all categories and child categories
+category_depth : 0
 
 ## Featured Tags
 featured-tags: true                     # whether or not using Feature-Tags
@@ -119,25 +125,25 @@ skip_render:
 # Writing
 new_post_name: :title.md # File name of new posts
 default_layout: post
-titlecase: false # Transform title into titlecase
+titlecase: true # Transform title into titlecase
 #external_link: true # Open external links in new tab
 external_link: # Open external links in new tab
   enable: true
-filename_case: 0
-render_drafts: false
+filename_case: 1
+render_drafts: true
 post_asset_folder: true
-relative_link: false
+relative_link: true
 future: true
 highlight:
   enable: true
   line_number: true
   auto_detect: true
-  tab_replace:
+  tab_replace: false
 
 # Category & Tag
 default_category: uncategorized
-category_map:
-tag_map:
+category_map: true
+tag_map: true
 home_posts_tag: true # show posts tags
 
 # Date / Time format

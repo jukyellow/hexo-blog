@@ -2,7 +2,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        <% if (is_home()) { %>
+        <% if (is_home() || is_category() || is_archive() ) { %>
             background-image: url('<%= config.root + config["header-img"] %>') 
             /*config*/
         <%} else if (is_post()){%>

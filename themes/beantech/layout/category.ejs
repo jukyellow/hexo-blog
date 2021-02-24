@@ -1,0 +1,55 @@
+---
+layout: page
+---
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+
+		<% if (site.categories.length) { %>
+			<div class="archive">
+				<% var p_category = null;
+				page.posts.each(post=>{ 
+					p_category = post.categories;
+				}) %>
+				
+				<% site.categories.sort('name').each(function(item){ %>
+				<% if(p_category.data[0]._id == item._id){ %>
+					<h4 class="archive-ul show" data-toggle="collapse" id="<%= item.name %>" data-target="#modal-<%= item.name %>"> <%= item.name %> <b class="caret"></b></h4>
+				<% } %>
+				<ul id="modal-<%= item.name %>" class="collapse in">
+					<% site.posts.sort('date', -1).forEach(function(it){ %>
+						<% if (it.categories.length == 1 && it.categories.data[0]._id == item._id && p_category.data[0]._id == item._id){ %>
+						<li class="listing-item">
+							<%= it.date.format('MM-DD') %>
+							<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+							<a href="<%= config.root %><%= it.path %>" <% if (it.description) { %> title="<%= it.description %>" <% } %>><%= it.title %></a>
+						</li>
+						<% } %>
+					<% }); %>
+			   </ul>
+			   <% }); %>
+			   <hr align="left" style="border: solid 1px gray; width: 55%;">
+				
+				<% site.categories.sort('name').each(function(item){ %>
+				<% if(p_category.data[0]._id != item._id){ %>
+					<h4 class="archive-ul show" data-toggle="collapse" id="<%= item.name %>" data-target="#modal-<%= item.name %>"> <%= item.name %> <b class="caret"></b></h4>
+				<% } %>
+				<ul id="modal-<%= item.name %>" class="collapse in">
+					<% site.posts.sort('date', -1).forEach(function(it){ %>
+						<% if (it.categories.length == 1 && it.categories.data[0]._id == item._id && p_category.data[0]._id != item._id){ %>
+						<li class="listing-item">
+							<%= it.date.format('MM-DD') %>
+							<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+							<a href="<%= config.root %><%= it.path %>" <% if (it.description) { %> title="<%= it.description %>" <% } %>><%= it.title %></a>
+						</li>
+						<% } %>
+					<% }); %>
+			   </ul>
+			   <% }); %>
+			   </ul>
+			</div>
+		<% } %>
+
+    </div>
+</div>
