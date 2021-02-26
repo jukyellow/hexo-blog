@@ -1,8 +1,5 @@
-<div style="text-align: center;">
-<a href="http://hits.dwyl.com/{{ site.url | remove_first: 'https://' | remove_first: 'http://' }}{{ page.url }}" target="_blank">
-  <img src="http://hits.dwyl.com/{{ site.url | remove_first: 'https://' | remove_first: 'http://' }}{{ page.url }}.svg" />
-</a>
-</div>
+<!-- COUNTER -->
+<script async src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script >
 
 <!-- Sidebar Container -->
 <div class="
@@ -12,6 +9,21 @@
     col-xs-12
     sidebar-container
 ">
+	<div style="font-size:13px; color:#808080!important;">
+		<!--
+		<a href="http://hits.dwyl.com/{{ site.url | remove_first: 'https://' | remove_first: 'http://' }}{{ page.url }}" target="_blank">
+		  <img src="http://hits.dwyl.com/{{ site.url | remove_first: 'https://' | remove_first: 'http://' }}{{ page.url }}.svg" />
+		</a>
+		-->
+		
+		<span id="busuanzi_container_site_pv">
+			 <b>[ 조회수 : <span id="busuanzi_value_site_pv"></span></b>
+		</span>
+		<span id="busuanzi_container_site_uv">
+		   <b>| 방문자수 : <span id="busuanzi_value_site_uv"></span> ]</b>
+		</span>
+	</div>
+
     <% if(theme.widgets){
 			theme.widgets.forEach(function(widget){ %>
 				<%- partial('_widget/' + widget) %>

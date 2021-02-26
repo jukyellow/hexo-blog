@@ -87,12 +87,19 @@
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>
                     </span> 
-                    re-Ported by <a href="http://beantech.org">BeanTech</a> | 
-                    <iframe
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> 
+                    <!-- | 
+					<iframe
                         style="margin-left: 2px; margin-bottom:-5px;"
                         frameborder="0" scrolling="0" width="91px" height="20px"
                         src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
                     </iframe>
+					-->
+					<br>
+					<!-- hits -->
+					<a href="http://hits.dwyl.com/{{ site.url | remove_first: 'https://' | remove_first: 'http://' }}{{ page.url }}" target="_blank">
+					  <img src="http://hits.dwyl.com/{{ site.url | remove_first: 'https://' | remove_first: 'http://' }}{{ page.url }}.svg" />
+					</a>
                 </p>
             </div>
         </div>
@@ -181,6 +188,17 @@
     ga('send', 'pageview');
 </script>
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T5KTSP5JKB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  var _gaId = '<%= config.ga_track_id %>';
+  gtag('config', _gaId);
+</script>
+
 <% } %>
 
 
@@ -200,5 +218,3 @@
     })();
 </script>
 <% } %>
-
-
