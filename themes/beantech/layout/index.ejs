@@ -4,37 +4,76 @@ layout: page
 <!-- Main Content -->
 
 <% page.posts.each(function(post){ %>
-<div class="post-preview">
+	<% if (!post.featured_image){ %>
+	<div class="post-preview" style="float: left; width: 100%;">
+		<a href="<%- config.root %><%- post.path %>">
+			<h2 class="post-title">
+				<%- post.title || "Untitled" %>
+			</h2>
+			<h3 class="post-subtitle">
+				<%- post.subtitle || "" %>
+			</h3>
+			<div class="post-content-preview">
+				<%- truncate(strip_html(post.content), {length: 140, omission: '...'}) %>...
+			</div>
+		</a>
+		<% if (config.home_posts_tag){%>
+			<p class="post-meta" style="margin: 10px 0;">
+				Posted by <%- post.author || config.author %> on
+				<%= post.date.format(config.date_format) %>
+			</p>
+			<div class="tags">
+				<% post.tags.forEach(function(tag){ %>
+				  <a href="<%= config.root %>tags/#<%= tag.name %>" title="<%= tag.name %>"><%= tag.name %></a>
+				<% }) %>
+			</div>
+		<%} else {%>
+			<p class="post-meta">
+				Posted by <%- post.author || config.author %> on
+				<%= post.date.format(config.date_format) %>
+			</p>
+		<%}%>
+	</div>
+	
+	<% }else{ %>
+	<div class="post-preview" style="float: left; width: 70%; padding:5px;">
+		<a href="<%- config.root %><%- post.path %>">
+			<h2 class="post-title">
+				<%- post.title || "Untitled" %>
+			</h2>
+			<h3 class="post-subtitle">
+				<%- post.subtitle || "" %>
+			</h3>
+			<div class="post-content-preview">
+				<!-- <%- truncate(strip_html(post.content), {length: 100, omission: '...'}) %>... -->
+				<%- truncate(strip_html(post.content), {length: 85, omission: '...'}) %>...
+			</div>
+		</a>
+		<% if (config.home_posts_tag){%>
+			<p class="post-meta" style="margin: 10px 0;">
+				Posted by <%- post.author || config.author %> on
+				<%= post.date.format(config.date_format) %>
+			</p>
+			<div class="tags">
+				<% post.tags.forEach(function(tag){ %>
+				  <a href="<%= config.root %>tags/#<%= tag.name %>" title="<%= tag.name %>"><%= tag.name %></a>
+				<% }) %>
+			</div>
+		<%} else {%>
+			<p class="post-meta">
+				Posted by <%- post.author || config.author %> on
+				<%= post.date.format(config.date_format) %>
+			</p>
+		<%}%>
+	</div>
 
-    <a href="<%- config.root %><%- post.path %>">
-        <h2 class="post-title">
-            <%- post.title || "Untitled" %>
-        </h2>
-        <h3 class="post-subtitle">
-            <%- post.subtitle || "" %>
-        </h3>
-        <div class="post-content-preview">
-            <%- truncate(strip_html(post.content), {length: 200, omission: '...'}) %>...
-        </div>
-    </a>
-    <% if (config.home_posts_tag){%>
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by <%- post.author || config.author %> on
-            <%= post.date.format(config.date_format) %>
-        </p>
-        <div class="tags">
-            <% post.tags.forEach(function(tag){ %>
-              <a href="<%= config.root %>tags/#<%= tag.name %>" title="<%= tag.name %>"><%= tag.name %></a>
-            <% }) %>
-        </div>
-    <%} else {%>
-        <p class="post-meta">
-            Posted by <%- post.author || config.author %> on
-            <%= post.date.format(config.date_format) %>
-        </p>
-    <%}%>
+	<div class="post-preview" style="float: left; width: 30%; padding:5px;">
+		<% if (post.featured_image){ %>
+			<img src="<%- post.featured_image %>">
+		<% } %>
+	</div>
+	<% } %>
 
-</div>
 <hr>
 <% }); %>
 
