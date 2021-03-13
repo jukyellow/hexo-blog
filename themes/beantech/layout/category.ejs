@@ -8,48 +8,198 @@ layout: page
 
 		<% if (site.categories.length) { %>
 			<div class="archive">
-				<% var p_category = null;
-				page.posts.each(post=>{ 
-					p_category = post.categories;
-				}) %>
-				
-				<% site.categories.sort('name').each(function(item){ %>
-				<% if(p_category.data[0]._id == item._id){ %>
-					<h4 class="archive-ul show" data-toggle="collapse" id="<%= item.name %>" data-target="#modal-<%= item.name %>"> <%= item.name %> <b class="caret"></b></h4>
-				<% } %>
-				<ul id="modal-<%= item.name %>" class="collapse in">
-					<% site.posts.sort('date', -1).forEach(function(it){ %>
-						<% if (it.categories.length == 1 && it.categories.data[0]._id == item._id && p_category.data[0]._id == item._id){ %>
-						<li class="listing-item">
-							<%= it.date.format('MM-DD') %>
-							<i class="fa fa-angle-double-right" aria-hidden="true"></i>
-							<a href="<%= config.root %><%= it.path %>" <% if (it.description) { %> title="<%= it.description %>" <% } %>><%= it.title %></a>
-						</li>
-						<% } %>
-					<% }); %>
-			   </ul>
-			   <% }); %>
-			   <hr align="left" style="border: solid 1px gray; width: 55%;">
-				
-				<% site.categories.sort('name').each(function(item){ %>
-				<% if(p_category.data[0]._id != item._id){ %>
-					<h4 class="archive-ul show" data-toggle="collapse" id="<%= item.name %>" data-target="#modal-<%= item.name %>"> <%= item.name %> <b class="caret"></b></h4>
-				<% } %>
-				<ul id="modal-<%= item.name %>" class="collapse in">
-					<% site.posts.sort('date', -1).forEach(function(it){ %>
-						<% if (it.categories.length == 1 && it.categories.data[0]._id == item._id && p_category.data[0]._id != item._id){ %>
-						<li class="listing-item">
-							<%= it.date.format('MM-DD') %>
-							<i class="fa fa-angle-double-right" aria-hidden="true"></i>
-							<a href="<%= config.root %><%= it.path %>" <% if (it.description) { %> title="<%= it.description %>" <% } %>><%= it.title %></a>
-						</li>
-						<% } %>
-					<% }); %>
-			   </ul>
-			   <% }); %>
-			   </ul>
-			</div>
-		<% } %>
+				<% var p_category = null; %>
+                <% var iter_cnt = 0; %>
+				<% page.posts.each(post=>{ %>
+                <% //page.posts.each(function(post){ %>
+				    <% p_category = post.categories; //선택된 카테고리 %>
+                    <!-- 선택된 카테고리기준 한번 출력후 바로 종료함,아니면 중복해서 찍힘(true-continue, false-break) -->
+                    <% if(iter_cnt>=1) { return false; } %>
+                    <% iter_cnt += 1 %>
+
+                    <!-- (선택 카테고리 출력 3분할) 1-1-1. 선택된 카테고리(depth=2)가 최상위로 올라오게 먼저찍는다. -->
+                    <% site.categories.each(function(p_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                        <% if(p_category.data[0]._id != p_item._id || (p_category.data[1]!=undefined && p_category.data[1].parent != p_item._id)){ %>
+                            <% return true; //continue, 선택된 카테고리가 아닐때 건너 뜀 %>
+                        <% } %>
+                        <!-- 부모가 모두 존재하는 depth=2라고 가정하고, 부모가 없는 depth=1은 그대로 찍는다. -->
+                        <!-- 부모가 있으면 depth=2임으로 loop를 돌면서 같은 부모의 child를 찍는다 -->
+                        <% var head_cnt = 0; //헤더는 한번만 찍기위해 %>
+                        <% var head_2d_cnt = 0; //헤더는 한번만 찍기위해 %>
+                        <% site.categories.each(function(c_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                            <!--부모가 있는걸 일단 찍는다 -->
+                            <% if(c_item.parent!=undefined && p_item._id == c_item.parent){ %>
+                                <!--depth=1헤더를 한번만 찍는다-->
+                                <% if (head_cnt==0) { %>
+                                    <h3 style="margin:10px 0 10px;" class="archive-ul" data-toggle="collapse" id="<%= p_item.name %>" data-target="#modal-<%= p_item.name %>"> <%= p_item.name %> </h3>
+                                    <% head_cnt += 1; %>
+                                <% } %>
+
+                                <!-- 1-1-1. 선택된 카테고리(depth=2)가 최상위로 올라오게 먼저찍는다. -->
+                                <% site.posts.sort('date', -1).forEach(function(it){ %>
+                                    <% //if (it.categories.length == 2 && it.categories.data[1]._id == c_item._id && it.categories.data[1]._id == p_category.data[1]._id){ %>
+                                    <!-- 부모도 같고, 자식도 같은 -->
+                                    <% if (it.categories.length == 2 && it.categories.data[1]._id == c_item._id && c_item.parent==p_category.data[0]._id && c_item._id == p_category.data[1]._id){ %>
+                                        <% if (head_2d_cnt==0) { %>
+                                            <h4 style="margin:10px 0 10px;" class="archive-ul show" data-toggle="collapse" id="<%= c_item.name %>" data-target="#modal-<%= c_item.name %>"> &nbsp;&nbsp;<%= c_item.name %> <b class="caret"></b></h4>
+                                            <% ++head_2d_cnt; %>
+                                        <% } %>
+                                    <% } %>
+                                    <% return false; //break %>
+                                <% }); %>
+                                <ul style="margin-bottom: 10px;" id="modal-<%= c_item.name %>" class="collapse in">
+                                    <% site.posts.sort('date', -1).forEach(function(it){ %>
+                                        <% if (it.categories.length == 2 && it.categories.data[1]._id == c_item._id && it.categories.data[1]._id == p_category.data[1]._id){ %>
+                                        <li class="listing-item">
+                                            <%= it.date.format('MM-DD') %>
+                                            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                            <a href="<%= config.root %><%= it.path %>" <% if (it.description) { %> title="<%= it.description %>" <% } %>><%= it.title %></a>
+                                        </li>
+                                        <% } %>
+                                    <% }); %>
+                                </ul>
+                            <% } %>
+                        <% }); // site.categories.sort('name').each(function(p_item) %>
+    			    <% }); // site.categories.sort('name').each(function(item)%>
+
+                    <!-- (선택 카테고리 출력 3분할) 1-1-2. 선택된 카테고리(depth=2)와 같은 부모(depth=1)의 나머지 카테고리를 찍는다.-->
+    			    <% site.categories.each(function(p_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                        <% if(p_category.data[0]._id != p_item._id || (p_category.data[1]!=undefined && p_category.data[1].parent != p_item._id)){ %>
+                            <% return true; //continue, 선택된 카테고리가 아닐때 건너 뜀 %>
+                        <% } %>
+                        <!-- 부모가 모두 존재하는 depth=2라고 가정하고, 부모가 없는 depth=1은 그대로 찍는다. -->
+                        <!-- 부모가 있으면 depth=2임으로 loop를 돌면서 같은 부모의 child를 찍는다 -->
+                        <% site.categories.each(function(c_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                            <!--부모가 있는걸 일단 찍는다 -->
+                            <% var head_cnt2 = 0; //(같은 카테고리에서)헤더는 한번만 찍기위해(변수위치가 중요!>child카테고리별로 한번씩 찍혀야함!) %>
+                            <% if(c_item.parent!=undefined && p_item._id == c_item.parent){ %>
+                                <% site.posts.sort('date', -1).forEach(function(it){ %>
+                                    <% //if (it.categories.length == 2 && it.categories.data[1]._id == c_item._id && it.categories.data[1]._id != p_category.data[1]._id){ %>
+                                    <!-- 부모는 같은데, 자식이 다른것 -->
+                                    <% if (it.categories.length == 2 && it.categories.data[1]._id == c_item._id && c_item.parent==p_category.data[0]._id && c_item._id != p_category.data[1]._id){ %>
+                                        <% if (head_cnt2==0) {  %>
+                                            <h4 style="margin:10px 0 10px;" class="archive-ul show" data-toggle="collapse" id="<%= c_item.name %>" data-target="#modal-<%= c_item.name %>"> &nbsp;&nbsp;<%= c_item.name %> <b class="caret"></b></h4>
+                                            <% head_cnt2 += 1; %>
+                                        <% } %>
+                                    <% } %>
+                                    <% return false; //break %>
+                                <% }); %>
+                                <ul style="margin-bottom: 10px;" id="modal-<%= c_item.name %>" class="collapse in">
+                                    <% site.posts.sort('date', -1).forEach(function(it){ %>
+                                        <% if (it.categories.length == 2 && it.categories.data[1]._id == c_item._id && it.categories.data[1]._id != p_category.data[1]._id){ %>
+                                        <li class="listing-item">
+                                            <%= it.date.format('MM-DD') %>
+                                            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                            <a href="<%= config.root %><%= it.path %>" <% if (it.description) { %> title="<%= it.description %>" <% } %>><%= it.title %></a>
+                                        </li>
+                                        <% } %>
+                                    <% }); %>
+                                </ul>
+                            <% } %>
+                        <% }); // site.categories.sort('name').each(function(p_item) %>
+    			    <% }); // site.categories.sort('name').each(function(item)%>
+
+                    <!-- (선택 카테고리 출력 3분할) 1.2 depth=1일때 헤더를 찍는다-->
+                    <% site.categories.each(function(p_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                        <% if(p_category.data[0]._id != p_item._id || (p_category.data[1]!=undefined && p_category.data[1].parent != p_item._id)){ %>
+                            <% return true; //continue, 선택된 카테고리가 아닐때 건너 뜀 %>
+                        <% } %>
+                        <% var head_cnt = 0; //헤더는 한번만 찍기위해 %>
+                        <% site.categories.each(function(c_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                            <!-- 1-2. 부모가 없는 Depth=1을 찍는다. -->
+                            <% if(c_item.parent==undefined && p_item._id == c_item._id){ %>
+                                <% site.posts.sort('date', -1).forEach(function(it){ %>
+                                    <% if (it.categories.length == 1 && it.categories.data[0]._id == c_item._id){ %>
+                                        <% if (head_cnt==0) { %>
+                                            <h3 style="margin:10px 0 10px;" class="archive-ul show" data-toggle="collapse" id="<%= c_item.name %>" data-target="#modal-<%= c_item.name %>"> <%= c_item.name %> </h3>
+                                            <% head_cnt += 1; %>
+                                        <% } %>
+                                    <% } %>
+                                    <% return false; //break %>
+                                <% }); %>
+                                <ul style="margin-bottom: 10px;" id="modal-<%= c_item.name %>" class="collapse in">
+                                    <% site.posts.sort('date', -1).forEach(function(it){ %>
+                                        <% if (it.categories.length == 1 && it.categories.data[0]._id == c_item._id){ %>
+                                        <li class="listing-item">
+                                            <%= it.date.format('MM-DD') %>
+                                            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                            <a href="<%= config.root %><%= it.path %>" <% if (it.description) { %> title="<%= it.description %>" <% } %>><%= it.title %></a>
+                                        </li>
+                                        <% } %>
+                                    <% }); %>
+                                </ul>
+                            <% } %>
+                        <% }); // site.categories.sort('name').each(function(p_item) %>
+    			    <% }); // site.categories.sort('name').each(function(item)%>
+    			    <hr align="left" style="border: solid 1px gray; width: 55%; margin:30px 0 0px">
+
+					<!-- 2. 나머지 카테고리를 하위에 표시 -->
+                    <% site.categories.sort('name').each(function(p_item){ %>
+                        <% var prn_hr_cnt = 0; %>
+                        <% if(p_category.data[0]._id == p_item._id || (p_category.data[1]!=undefined && p_category.data[1].parent == p_item._id)){ %>
+                            <% return true; //continue, 선택된 카테고리는 위에서 찍었으므로 제외 %>
+                        <% } %>
+                        <!-- 부모가 모두 존재하는 depth=2라고 가정하고, 부모가 없는 depth=1은 그대로 찍는다. -->
+                        <!-- 부모가 있으면 depth=2임으로 loop를 돌면서 같은 부모의 child를 찍는다 -->
+                        <% var head_cnt = 0; //헤더는 한번만 찍기위해 %>
+                        <% site.categories.sort('name').each(function(c_item){ %>
+                            <!--부모가 있는걸 일단 찍는다 -->
+                            <% if(c_item.parent!=undefined && p_item._id == c_item.parent){ %>
+                                <!--depth=1헤더를 한번만 찍는다-->
+                                <% if (head_cnt==0) { %>
+                                    <h3 class="archive-ul" data-toggle="collapse" id="<%= p_item.name %>" data-target="#modal-<%= p_item.name %>"> <%= p_item.name %> </h3>
+                                    <% head_cnt += 1; %>
+                                <% } %>
+                                <h4 style="margin:10px 0 10px;" class="archive-ul show" data-toggle="collapse" id="<%= c_item.name %>" data-target="#modal-<%= c_item.name %>"> &nbsp;&nbsp;<%= c_item.name %> <b class="caret"></b></h4>
+                                <ul style="margin-bottom: 10px;" id="modal-<%= c_item.name %>" class="collapse in">
+                                    <% site.posts.sort('date', -1).forEach(function(it){ %>
+                                        <!-- depth=2만 찍는-->
+                                        <% if (it.categories.length==2 && it.categories.data[1]._id==c_item._id){ %>
+                                        <li class="listing-item">
+                                            <%= it.date.format('MM-DD') %>
+                                            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                            <a href="<%= config.root %><%= it.path %>" <% if (it.description) { %> title="<%= it.description %>" <% } %>><%= it.title %></a>
+                                        </li>
+                                        <% } %>
+                                        <% ++prn_hr_cnt; %>
+                                    <% }); %>
+                                </ul>
+                            <% } else{ //if(item.parent == p_item.parent || item.parent == p_item._id) %>
+                                <!-- 부모가 없는 Depth=1을 찍는다. -->
+                                <% if(c_item.parent==undefined && p_item._id == c_item._id){ %>
+                                    <!-- depth=1일때 헤더를 찍는다-->
+                                    <% site.posts.sort('date', -1).forEach(function(it){ %>
+                                        <% if (it.categories.length == 1 && it.categories.data[0]._id == c_item._id){ %>
+                                            <% if (head_cnt==0) { %>
+                                                <h3 class="archive-ul show" data-toggle="collapse" id="<%= c_item.name %>" data-target="#modal-<%= c_item.name %>"> <%= c_item.name %> </h3>
+                                                <% head_cnt += 1; %>
+                                            <% } %>
+                                        <% } %>
+                                        <% return false; //break %>
+                                    <% }); %>
+                                    <ul style="margin-bottom: 10px;" id="modal-<%= c_item.name %>" class="collapse in">
+                                        <% site.posts.sort('date', -1).forEach(function(it){ %>
+                                            <% if (it.categories.length == 1 && it.categories.data[0]._id == c_item._id){ %>
+                                            <li class="listing-item">
+                                                <%= it.date.format('MM-DD') %>
+                                                <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                                <a href="<%= config.root %><%= it.path %>" <% if (it.description) { %> title="<%= it.description %>" <% } %>><%= it.title %></a>
+                                            </li>
+                                            <% } %>
+                                            <% ++prn_hr_cnt; %>
+                                        <% }); %>
+                                    </ul>
+                                <% } %>
+                            <% }%>
+                        <% }); // site.categories.sort('name').each(function(p_item) %>
+                        <% if(prn_hr_cnt>=1){ %>
+                            <hr align="left" style="width: 55%; margin:30px 0 0px">
+                        <% } %>
+                    <% }); //site.categories.sort('name').each(function(item) %>
+
+				<% }) //page.posts.each %>
+			</div> <!-- archive -->
+		<% } //site.categories.length %>
 
     </div>
 </div>
