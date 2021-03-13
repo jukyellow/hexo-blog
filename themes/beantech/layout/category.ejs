@@ -11,18 +11,17 @@ layout: page
 				<% var p_category = null; %>
                 <% var iter_cnt = 0; %>
 				<% page.posts.each(post=>{ %>
-                <% //page.posts.each(function(post){ %>
 				    <% p_category = post.categories; //선택된 카테고리 %>
                     <% if(iter_cnt>=1) { return false; } %>
                     <% iter_cnt += 1 %>
 
-                    <% site.categories.each(function(p_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                    <% site.categories.sort('name').each(function(p_item){  %>
                         <% if(p_category.data[0]._id != p_item._id || (p_category.data[1]!=undefined && p_category.data[1].parent != p_item._id)){ %>
                             <% return true; //continue  %>
                         <% } %>
                         <% var head_cnt = 0; //헤더는 한번만 찍기위해 %>
                         <% var head_2d_cnt = 0; //헤더는 한번만 찍기위해 %>
-                        <% site.categories.each(function(c_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                        <% site.categories.sort('name').each(function(c_item){  %>
                             <% if(c_item.parent!=undefined && p_item._id == c_item.parent){ %>
                                 <% if (head_cnt==0) { %>
                                     <h3 style="margin:10px 0 10px;" class="archive-ul" data-toggle="collapse" id="<%= p_item.name %>" data-target="#modal-<%= p_item.name %>"> <%= p_item.name %> </h3>
@@ -53,11 +52,11 @@ layout: page
                         <% }); // site.categories.sort('name').each(function(p_item) %>
     			    <% }); // site.categories.sort('name').each(function(item)%>
 
-                    <% site.categories.each(function(p_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                    <% site.categories.sort('name').each(function(p_item){ %>
                         <% if(p_category.data[0]._id != p_item._id || (p_category.data[1]!=undefined && p_category.data[1].parent != p_item._id)){ %>
                             <% return true; //continue %>
                         <% } %>
-                        <% site.categories.each(function(c_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                        <% site.categories.sort('name').each(function(c_item){ %>
                             <% var head_2d_cnt = 0; //헤더는 한번만 찍기위해 %>
                             <% if(c_item.parent!=undefined && p_item._id == c_item.parent){ %>
                                 <% site.posts.sort('date', -1).forEach(function(it){ %>
@@ -84,12 +83,12 @@ layout: page
                         <% }); // site.categories.sort('name').each(function(p_item) %>
     			    <% }); // site.categories.sort('name').each(function(item)%>
 
-                    <% site.categories.each(function(p_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                    <% site.categories.sort('name').each(function(p_item){ %>
                         <% if(p_category.data[0]._id != p_item._id || (p_category.data[1]!=undefined && p_category.data[1].parent != p_item._id)){ %>
                             <% return true; //continue, 선택된 카테고리가 아닐때 건너 뜀 %>
                         <% } %>
                         <% var head_cnt = 0; //헤더는 한번만 찍기위해 %>
-                        <% site.categories.each(function(c_item){ // 선택된 순서대로 찍기위해 소팅제거(sort('name') %>
+                        <% site.categories.sort('name').each(function(c_item){  %>
                             <% if(c_item.parent==undefined && p_item._id == c_item._id){ %>
                                 <% site.posts.sort('date', -1).forEach(function(it){ %>
                                     <% if (it.categories.length == 1 && it.categories.data[0]._id == c_item._id){ %>
