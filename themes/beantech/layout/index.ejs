@@ -69,7 +69,7 @@ layout: page
 
 	<div class="post-preview" style="float: left; width: 30%; padding:5px;">
 		<% if (post.featured_image){ %>
-			<img src="<%- post.featured_image %>">
+			<img src="<%- config.root %><%- post.path %><%- post.featured_image %>">
 		<% } %>
 	</div>
 	<% } %>
